@@ -100,9 +100,47 @@ function viewAllDept() {
 };
 
 function viewAllRole() {
-    var query = "SELECT role.title 'Poistions' FROM role";
+    var query = "SELECT role.title 'Postions', role.salary 'Salary', department.name 'Department' ";
+    query += "FROM role LEFT JOIN department ON role.department_id = department.id";
     connection.query(query, function (err, res) {
         console.table('\n', res);
         runPrompts();
     });
 };
+
+function addEmploy() {
+    inquirer.prompt([
+        {
+            name: "first_name",
+            type: "input",
+            message: "What is the employee's first name?"
+        },
+        {
+            name: "last_name",
+            type: "input",
+            message: "What is the employee's last name?"
+        },
+        {
+            name: "role_id",
+            type: "input",
+            message: "What is the employee's role ID number?"
+        },
+        {
+            name: "manager_id",
+            type: "input",
+            message: "What is the employee's manager ID number?"
+        }
+    ])
+    .then(function(answer) {
+        connection.query("INSERT INTO employee SET ?", { 
+            first_name : answer.first_name,
+            last_name : answer.last_name,
+            role_id : answer.role_id,
+            manager_id : answer.manager_id
+        }, function (err, res){
+            if (err) throw err;
+            console.table('\n', viewAll(res));
+            runPrompts();
+        });
+    });
+}
