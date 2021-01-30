@@ -88,21 +88,21 @@ function viewAll() {
     connection.query(query, function (err, res) {
         console.table('\n', res);
         runPrompts();
-    }) 
-}
+    });
+};
 
 function viewAllDept() {
     var query = "SELECT department.name 'Departments' FROM department";
     connection.query(query, function (err, res) {
         console.table('\n', res);
         runPrompts();
-    })
-}
+    });
+};
 
 function viewAllRole() {
     var query = "SELECT role.title 'Poistions' FROM role";
     connection.query(query, function (err, res) {
         console.table('\n', res);
         runPrompts();
-    })
-}
+    });
+};
