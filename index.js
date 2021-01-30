@@ -194,3 +194,46 @@ function addDept() {
         })
     })
 }
+
+function displayAll() {
+    var query = "SELECT e.first_name 'First Name', e.last_name 'Last Name', role.ID 'Role ID', role.salary 'Salary', department.name 'Department', CONCAT(m.first_name, ' ', m.last_name) 'Manager' ";
+    query += "FROM employee AS e LEFT JOIN role ON e.role_id = role.ID ";
+    query += "LEFT JOIN department ON role.department_id = department.id ";
+    query += "LEFT JOIN employee as m ON e.manager_id = m.role_id";
+    
+    connection.query(query, function (err, res) {
+        console.table('\n', res);
+    });
+};
+
+
+function updateRoles() {
+    console.log('\n', displayAll());
+    console.log("Choose an employee who's role you wish to modify.")
+    inquirer.prompt ([
+        {
+            name: "firstName",
+            type: "input",
+            message: "Enter the first name of the employee you wish to modify."
+        },
+        {
+            name: "lastName",
+            type: "input",
+            message: "Enter the last name of the employee you wish to modify."
+        },
+        {
+            name: "newRole",
+            type: "input",
+            message: "Enter the new role ID of the Employee."
+        }
+    ])
+    .then(function(answer) {
+        var query= "UPDATE employee SET role_id = ? "
+        query += "WHERE first_name = ? AND last_name = ?"
+        connection.query(query,[answer.newRole, answer.firstName, answer.lastName], function (err, res) {
+            if (err) throw err
+            console.log (res.affectedRows + " Updated Rows '\n' ");
+        })
+
+    })
+}
