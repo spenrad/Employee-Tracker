@@ -33,8 +33,8 @@ function runPrompts() {
         message: "What would you like to do?",
         choices: [
             "View All Employees",
-            "View All Emloyees by Department",
-            "View All Employees by Role",
+            "View All Departments",
+            "View Employee Roles",
             "Add Employee",
             "Add Role",
             "Add Department",
@@ -49,11 +49,11 @@ function runPrompts() {
             viewAll();
             break;
        
-        case "View All Employees by Department":
+        case "View All Departments":
             viewAllDept();
             break;
         
-        case "View All Employees by Role":
+        case "View Employee Roles":
             viewAllRole();
             break;
 
@@ -80,10 +80,10 @@ function runPrompts() {
 
 // View All Employees
 function viewAll() {
-    var query = "SELECT e.first_name AS 'First Name', e.last_name AS 'Last Name', role.title 'Postion', role.salary AS 'Salary', department.name AS 'Department', CONCAT(m.first_name, ' ', m.last_name) AS Manager ";
+    var query = "SELECT e.first_name 'First Name', e.last_name 'Last Name', role.title 'Postion', role.salary 'Salary', department.name 'Department', CONCAT(m.first_name, ' ', m.last_name) 'Manager' ";
     query += "FROM employee AS e LEFT JOIN role ON e.role_id = role.ID ";
     query += "LEFT JOIN department ON role.department_id = department.id ";
-    query += "Left JOIN employee as m ON e.manager_id = m.role_id";
+    query += "LEFT JOIN employee as m ON e.manager_id = m.role_id";
     
     connection.query(query, function (err, res) {
         console.table('\n', res);
@@ -91,3 +91,18 @@ function viewAll() {
     }) 
 }
 
+function viewAllDept() {
+    var query = "SELECT department.name 'Departments' FROM department";
+    connection.query(query, function (err, res) {
+        console.table('\n', res);
+        runPrompts();
+    })
+}
+
+function viewAllRole() {
+    var query = "SELECT role.title 'Poistions' FROM role";
+    connection.query(query, function (err, res) {
+        console.table('\n', res);
+        runPrompts();
+    })
+}
