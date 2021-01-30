@@ -144,3 +144,53 @@ function addEmploy() {
         });
     });
 }
+
+function addRole() {
+    inquirer.prompt([
+        {
+            name: "role",
+            type: "input",
+            message: "What new role are you adding?"
+        },
+        {
+            name: "salary",
+            type: "input",
+            message: "How much does this position pay?"
+        },
+        {
+            name: "dept",
+            type: "input",
+            message: "What is the new roles department ID?"
+        }
+    ])
+    .then(function(answer) {
+        connection.query("INSERT INTO role SET ?", {
+            title : answer.role,
+            salary : answer.salary,
+            department_id : answer.dept
+        }, function (err, res) {
+            if (err) throw err;
+            console.table('\n', viewAllRole(res));
+            runPrompts();
+        })
+    })
+}
+
+function addDept() {
+    inquirer.prompt([
+        {
+            name: "dept",
+            type: "input",
+            message: "What is the new Department's name?"
+        }
+    ])
+    .then(function(answer) {
+        connection.query("INSERT INTO department SET ?", {
+            name : answer.dept,
+        }, function (err, res) {
+            if (err) throw err;
+            console.table('\n', viewAllDept(res));
+            runPrompts();
+        })
+    })
+}
