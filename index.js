@@ -1,7 +1,9 @@
+// Dependencies
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 require("console.table");
 
+// Connection
 var connection = mysql.createConnection({
   host: "localhost",
 
@@ -16,11 +18,14 @@ var connection = mysql.createConnection({
   database: "employee_db"
 });
 
+
+// On connection, runs the Inquirer Prompts
 connection.connect(function(err) {
   if (err) throw err;
     runPrompts();
 });
 
+// Inquirer Prompts
 function runPrompts() {
     inquirer.prompt({
         name: "action",
@@ -36,6 +41,7 @@ function runPrompts() {
             "Update Employee Roles"
         ]
     })
+    // Switch Statements Containing Case Functions
     .then(function(answer) {
         switch(answer.action) {
         
@@ -69,3 +75,19 @@ function runPrompts() {
         }
     })
 }
+
+// Case Functions
+
+// View All Employees
+function viewAll() {
+    var query = "SELECT e.first_name AS 'First Name', e.last_name AS 'Last Name', role.title 'Postion', role.salary AS 'Salary', department.name AS 'Department', CONCAT(m.first_name, ' ', m.last_name) AS Manager ";
+    query += "FROM employee AS e LEFT JOIN role ON e.role_id = role.ID ";
+    query += "LEFT JOIN department ON role.department_id = department.id ";
+    query += "Left JOIN employee as m ON e.manager_id = m.role_id";
+    
+    connection.query(query, function (err, res) {
+        console.table('\n', res);
+        runPrompts();
+    }) 
+}
+
